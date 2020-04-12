@@ -47,25 +47,35 @@ void FXOS8700CQ_writeRegs(uint8_t * data, int len);
 // }
 
 void logger(float t[], int sample){
-    float x, y, z;
-    int tilt;
-    x = t[0];
-    y = t[1];
-    z = t[2];
-    for(int i=0; i<sample; i++){
-        redLED = !redLED;
-        pc.printf("%f\n", x);
-        pc.printf("%f\n", y);
-        pc.printf("%f\n", z);
-        if((x<-0.5||x>0.5)||(y<-0.5||y>0.5)){ // >45 degree
-            tilt = 1;
-        }
-        else{
-            tilt = 0;
-        }
-        pc.printf("%d\n", tilt);
-        wait(0.1);
-    }
+   float x[100], y[100], z[100];
+   int tilt[100];
+   //record data
+   for(int i=0; i<sample; i++){
+      redLED = !redLED;
+      x[i] = t[0];
+      y[i] = t[1];
+      z[i] = t[2];
+      if((x[i]<-0.5||x[i]>0.5)||(y[i]<-0.5||y[i]>0.5)){ // >45 degree
+         tilt[i] = 1;
+      }
+      else{
+         tilt[i] = 0;
+      }
+      wait(0.1);
+   }
+   //send data to pc
+   for(int i=0; i<sample; i++){
+      pc.printf("%f\n", x[i]);
+   }
+   for(int i=0; i<sample; i++){
+      pc.printf("%f\n", y[i]);
+   }
+   for(int i=0; i<sample; i++){
+      pc.printf("%f\n", z[i]);
+   }
+   for(int i=0; i<sample; i++){
+      pc.printf("%d\n", tilt[i]);
+   }
 }
 
 int main() {
@@ -86,7 +96,7 @@ int main() {
    // Get the slave address
    FXOS8700CQ_readRegs(FXOS8700Q_WHOAMI, &who_am_i, 1);
 
-   pc.printf("Here is %x\r\n", who_am_i);
+//    pc.printf("Here is %x\r\n", who_am_i);
 
    //default led 
    redLED = 1;
