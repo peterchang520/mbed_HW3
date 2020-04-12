@@ -28,9 +28,7 @@ Serial pc(USBTX, USBRX);
 InterruptIn sw3(SW3);
 DigitalOut redLED(LED1);
 EventQueue queue1;
-EventQueue queue2;
 Thread thread1;
-Thread thread2;
 
 int sample = 100;
 
@@ -38,13 +36,6 @@ int m_addr = FXOS8700CQ_SLAVE_ADDR1;
 
 void FXOS8700CQ_readRegs(int addr, uint8_t * data, int len);
 void FXOS8700CQ_writeRegs(uint8_t * data, int len);
-
-// void blink_led(){
-//     for(int i=0; i<20; i++){
-//         redLED = !redLED;
-//         wait(0.5);
-//     }
-// }
 
 void logger(float t[], int sample){
    float x[100], y[100], z[100];
@@ -87,7 +78,6 @@ int main() {
    float t[3];
 
    // Enable the FXOS8700Q
-
    FXOS8700CQ_readRegs( FXOS8700Q_CTRL_REG1, &data[1], 1);
    data[1] |= 0x01;
    data[0] = FXOS8700Q_CTRL_REG1;
@@ -96,15 +86,12 @@ int main() {
    // Get the slave address
    FXOS8700CQ_readRegs(FXOS8700Q_WHOAMI, &who_am_i, 1);
 
-//    pc.printf("Here is %x\r\n", who_am_i);
-
    //default led 
    redLED = 1;
+
    //interrupt
-//    thread1.start(callback(&queue1, &EventQueue::dispatch_forever));
-   thread2.start(callback(&queue2, &EventQueue::dispatch_forever));
-//    sw3.rise(queue1.event(blink_led));
-   sw3.rise(queue2.event(logger, t, sample));
+   thread1.start(callback(&queue1, &EventQueue::dispatch_forever));
+   sw3.rise(queue1.event(logger, t, sample));
 
    while (true) {
 
@@ -125,13 +112,7 @@ int main() {
          acc16 -= UINT14_MAX;
       t[2] = ((float)acc16) / 4096.0f;
 
-    //   printf("FXOS8700Q ACC: X=%1.4f(%x%x) Y=%1.4f(%x%x) Z=%1.4f(%x%x)\r\n",\
-    //         t[0], res[0], res[1],\
-    //         t[1], res[2], res[3],\
-    //         t[2], res[4], res[5]\
-    //   );
-
-      wait(1.0);
+      wait(0.1);
    }
 }
 
