@@ -47,11 +47,23 @@ void FXOS8700CQ_writeRegs(uint8_t * data, int len);
 // }
 
 void logger(float t[], int sample){
+    float x, y, z;
+    int tilt;
+    x = t[0];
+    y = t[1];
+    z = t[2];
     for(int i=0; i<sample; i++){
         redLED = !redLED;
-        pc.printf("%f\n", t[0]);
-        pc.printf("%f\n", t[1]);
-        pc.printf("%f\n", t[2]);
+        pc.printf("%f\n", x);
+        pc.printf("%f\n", y);
+        pc.printf("%f\n", z);
+        if((x<-0.5||x>0.5)||(y<-0.5||y>0.5)){ // >45 degree
+            tilt = 1;
+        }
+        else{
+            tilt = 0;
+        }
+        pc.printf("%d\n", tilt);
         wait(0.1);
     }
 }
