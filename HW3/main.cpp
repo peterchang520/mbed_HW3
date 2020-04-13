@@ -30,7 +30,7 @@ DigitalOut redLED(LED1);
 EventQueue queue1;
 Thread thread1;
 
-int sample = 100;
+int sample = 101;
 
 int m_addr = FXOS8700CQ_SLAVE_ADDR1;
 
@@ -38,8 +38,8 @@ void FXOS8700CQ_readRegs(int addr, uint8_t * data, int len);
 void FXOS8700CQ_writeRegs(uint8_t * data, int len);
 
 void logger(float t[], int sample){
-   float x[100], y[100], z[100];
-   int tilt[100];
+   float x[101], y[101], z[101];
+   int tilt[101];
    //record data
    for(int i=0; i<sample; i++){
       redLED = !redLED;
@@ -54,6 +54,7 @@ void logger(float t[], int sample){
       }
       wait(0.1);
    }
+   redLED = !redLED;
    //send data to pc
    for(int i=0; i<sample; i++){
       pc.printf("%f\n", x[i]);
