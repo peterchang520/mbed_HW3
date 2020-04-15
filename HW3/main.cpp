@@ -1,6 +1,7 @@
 #include "mbed.h"
 #include "fsl_port.h"
 #include "fsl_gpio.h"
+#include "math.h"
 #define UINT14_MAX        16383
 // FXOS8700CQ I2C address
 #define FXOS8700CQ_SLAVE_ADDR0 (0x1E<<1) // with pins SA0=0, SA1=0
@@ -46,7 +47,7 @@ void logger(float t[], int sample){
       x[i] = t[0];
       y[i] = t[1];
       z[i] = t[2];
-      if((x[i]<-0.5||x[i]>0.5)||(y[i]<-0.5||y[i]>0.5)){ // >45 degree
+      if((x[i]<-1/sqrt(2)||x[i]>1/sqrt(2))||(y[i]<-1/sqrt(2)||y[i]>1/sqrt(2))){ // >45 degree
          tilt[i] = 1;
       }
       else{
